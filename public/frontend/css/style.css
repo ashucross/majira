@@ -1533,8 +1533,9 @@ Version:1.0
 	padding-bottom:0;
 }
 .small-banner .single-banner {
-	overflow:hidden;
-	position:relative;
+    overflow: hidden;
+    position: relative;
+    max-height: 476px;
 }
 .small-banner .single-banner img{
 	height:100%;

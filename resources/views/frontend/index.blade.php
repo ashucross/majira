@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title','E-SHOP || HOME PAGE')
+@section('title','Majira|| HOME PAGE')
 @section('main-content')
 <!-- Slider Area -->
 @if(count($banners)>0)
@@ -354,7 +354,7 @@
                 <div class="single-service">
                     <i class="ti-reload"></i>
                     <h4>Free Return</h4>
-                    <p>Within 30 days returns</p>
+                    <p>Within 7 days returns</p>
                 </div>
                 <!-- End Single Service -->
             </div>
