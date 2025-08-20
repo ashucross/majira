@@ -5,7 +5,7 @@
 <div class="card">
     <h5 class="card-header">Edit Product</h5>
     <div class="card-body">
-      <form method="post" action="{{route('product.update',$product->id)}}">
+      <form method="post" action="{{route('product.update',$product->id)}}"  enctype="multipart/form-data">
         @csrf 
         @method('PATCH')
         <div class="form-group">
@@ -63,7 +63,7 @@
         </div>
 
         <div class="form-group">
-          <label for="price" class="col-form-label">Price(NRS) <span class="text-danger">*</span></label>
+          <label for="price" class="col-form-label">Price(RS) <span class="text-danger">*</span></label>
           <input id="price" type="number" name="price" placeholder="Enter price"  value="{{$product->price}}" class="form-control">
           @error('price')
           <span class="text-danger">{{$message}}</span>
@@ -120,7 +120,33 @@
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
-        <div class="form-group">
+         <div class="form-group">
+  <label for="inputPhoto" class="col-form-label">
+    Photo <span class="text-danger">*</span>
+  </label>
+ <div class="form-group">
+    <label for="photos">Upload Multiple Photos</label>
+    <input type="file" name="photo[]" id="photos" class="form-control" multiple>
+</div>
+
+@if($product->photo)
+    @php
+        $photos = explode(',', $product->photo);
+    @endphp
+    <div id="photo-wrapper" class="mt-2">
+        @foreach($photos as $pho)
+            <div class="photo-item d-inline-block position-relative m-1" data-photo="{{$pho}}">
+                <img src="{{ asset($pho) }}" class="img-fluid zoom" style="max-width:80px" alt="{{$pho}}">
+                <button type="button" class="btn btn-sm btn-danger btn-delete-photo" 
+                        style="position:absolute;top:0;right:0;">&times;</button>
+            </div>
+        @endforeach
+    </div>
+@else
+    <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
+@endif
+
+        {{-- <div class="form-group">
           <label for="inputPhoto" class="col-form-label">Photo <span class="text-danger">*</span></label>
           <div class="input-group">
               <span class="input-group-btn">
@@ -134,7 +160,7 @@
           @error('photo')
           <span class="text-danger">{{$message}}</span>
           @enderror
-        </div>
+        </div> --}}
         
         <div class="form-group">
           <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
@@ -166,8 +192,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 <script>
-    $('#lfm').filemanager('image');
-
+    // $('#lfm').filemanager('image'); 
     $(document).ready(function() {
     $('#summary').summernote({
       placeholder: "Write short description.....",
@@ -185,6 +210,28 @@
 </script>
 
 <script>
+
+  $(document).on('click', '.btn-delete-photo', function () {
+    let photoItem = $(this).closest('.photo-item');
+    let photoPath = photoItem.data('photo');
+
+    $.ajax({
+        url: "{{ route('product.photo.delete') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            product_id: "{{ $product->id }}",
+            photo: photoPath
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                photoItem.remove();
+            }
+        }
+    });
+});
+
+
   var  child_cat_id='{{$product->child_cat_id}}';
         // alert(child_cat_id);
         $('#cat_id').change(function(){

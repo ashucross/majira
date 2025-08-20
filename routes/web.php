@@ -129,6 +129,7 @@
 
 // Backend section start
 
+Route::post('/product/photo/delete', [ProductController::class, 'deletePhoto'])->name('product.photo.delete');
     Route::group(['prefix' => '/admin', 'middleware' => ['auth', 'admin']], function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
         Route::get('/file-manager', function () {

@@ -5,7 +5,16 @@
 <div class="card">
     <h5 class="card-header">Add Product</h5>
     <div class="card-body">
-      <form method="post" action="{{route('product.store')}}">
+      @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+      <form method="post" action="{{route('product.store')}}" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="form-group">
           <label for="inputTitle" class="col-form-label">Title <span class="text-danger">*</span></label>
@@ -114,6 +123,15 @@
           @enderror
         </div>
         <div class="form-group">
+  <label for="inputPhoto" class="col-form-label">
+    Photo <span class="text-danger">*</span>
+  </label>
+  <div class="form-group">
+        <label for="photos">Upload Multiple Photos</label>
+        <input type="file" name="photo[]" id="photos" class="form-control" multiple>
+    </div>
+</div>
+        {{-- <div class="form-group">
           <label for="inputPhoto" class="col-form-label">Photo <span class="text-danger">*</span></label>
           <div class="input-group">
               <span class="input-group-btn">
@@ -122,12 +140,12 @@
                   </a>
               </span>
           <input id="thumbnail" class="form-control" type="text" name="photo" value="{{old('photo')}}">
-        </div>
+        </div> 
         <div id="holder" style="margin-top:15px;max-height:100px;"></div>
           @error('photo')
           <span class="text-danger">{{$message}}</span>
           @enderror
-        </div>
+        </div>--}}
         
         <div class="form-group">
           <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
@@ -159,7 +177,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 <script>
-    $('#lfm').filemanager('image');
+      var selectedImages = [];
+
+  // Init file manager
+  $('#lfm').filemanager('image');
+
+  // Override default callback
+  window.SetUrl = function (items) {
+    items.forEach(function (item) {
+      // Add to array
+      selectedImages.push(item.url);
+
+      // Show preview
+      $('#holder').append('<img src="' + item.url + '" style="height:100px; margin:5px;">');
+    });
+
+    // Store comma-separated URLs in input
+    $('#thumbnail').val(selectedImages.join(','));
+  };
 
     $(document).ready(function() {
       $('#summary').summernote({

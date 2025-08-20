@@ -144,8 +144,8 @@
                                                 @php
                                                     $after_discount=($product->price-($product->price*$product->discount)/100);
                                                 @endphp
-                                                <span>${{number_format($after_discount,2)}}</span>
-                                                <del style="padding-left:4%;">${{number_format($product->price,2)}}</del>
+                                                <span>{{number_format($after_discount,2)}}Rs</span>
+                                                <del style="padding-left:4%;">{{number_format($product->price,2)}}Rs</del>
                                             </div>
                                         </div>
                                     </div>
@@ -235,11 +235,11 @@
                             <div class="product-content">
                                 <h3><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h3>
                                 <div class="product-price">
-                                    <span class="old">${{number_format($product->price,2)}}</span>
+                                    <span class="old">{{number_format($product->price,2)}}Rs</span>
                                     @php
                                     $after_discount=($product->price-($product->price*$product->discount)/100)
                                     @endphp
-                                    <span>${{number_format($after_discount,2)}}</span>
+                                    <span>{{number_format($after_discount,2)}}Rs</span>
                                 </div>
                             </div>
                         </div>
@@ -287,7 +287,7 @@
                                 <div class="col-lg-6 col-md-6 col-12 no-padding">
                                     <div class="content">
                                         <h4 class="title"><a href="#">{{$product->title}}</a></h4>
-                                        <p class="price with-discount">${{number_format($product->discount,2)}}</p>
+                                        <p class="price with-discount">{{number_format($product->discount,2)}}Rs</p>
                                     </div>
                                 </div>
                                 </div>
@@ -447,7 +447,7 @@
                                         @php
                                             $after_discount=($product->price-($product->price*$product->discount)/100);
                                         @endphp
-                                        <h3><small><del class="text-muted">${{number_format($product->price,2)}}</del></small>    ${{number_format($after_discount,2)}}  </h3>
+                                        <h3><small><del class="text-muted">{{number_format($product->price,2)}}Rs</del></small>    {{number_format($after_discount,2)}}Rs  </h3>
                                         <div class="quickview-peragraph">
                                             <p>{!! html_entity_decode($product->summary) !!}</p>
                                         </div>
@@ -519,8 +519,8 @@
 @endsection
 
 @push('styles')
-    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f2e5abf393162001291e431&product=inline-share-buttons' async='async'></script>
-    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f2e5abf393162001291e431&product=inline-share-buttons' async='async'></script>
+    <!-- <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f2e5abf393162001291e431&product=inline-share-buttons' async='async'></script>
+    <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5f2e5abf393162001291e431&product=inline-share-buttons' async='async'></script> -->
     <style>
         /* Banner Sliding */
         #Gslider .carousel-inner {
@@ -550,7 +550,7 @@
         #Gslider .carousel-inner .carousel-caption p {
         font-size: 18px;
         color: black;
-        margin: 28px 0 28px 0;
+        margin: 8px 0 8px 0;
         }
 
         #Gslider .carousel-indicators {
@@ -603,6 +603,7 @@
                 $(this).addClass('how-active1');
             });
         });
+        
     </script>
     <script>
          function cancelFullScreen(el) {

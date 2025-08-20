@@ -40,10 +40,10 @@
 <link rel="stylesheet" href="{{asset('frontend/css/reset.css')}}">
 <link rel="stylesheet" href="{{asset('frontend/css/style.css')}}">
 <link rel="stylesheet" href="{{asset('frontend/css/responsive.css')}}">
-<script type='text/javascript'
+<!-- <script type='text/javascript'
     src='https://platform-api.sharethis.com/js/sharethis.js#property=5f2e5abf393162001291e431&product=inline-share-buttons'
-    async='async'></script>
-<style>
+    async='async'></script>-->
+<style> 
 /* Multilevel dropdown */
 .dropdown-submenu {
     position: relative;
@@ -85,6 +85,9 @@
     background: white;
     padding: 3px;
     border-radius: 8px;
+}
+.midium-banner .single-banner .content {
+    background: #ffffff4d;
 }
 </style>
 
