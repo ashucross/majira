@@ -25,8 +25,10 @@ class CreateProductsTable extends Migration
             $table->enum('condition',['default','new','hot'])->default('default');
             $table->enum('status',['active','inactive'])->default('inactive');
             $table->float('price');
-            $table->float('discount')->nullabale();
-            $table->boolean('is_featured')->deault(false);
+            $table->float('price_usd');
+            $table->float('discount')->nullable();
+            $table->float('discount_usd')->nullable();
+            $table->boolean('is_featured')->default(false);
             $table->unsignedBigInteger('cat_id')->nullable();
             $table->unsignedBigInteger('child_cat_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
@@ -37,7 +39,7 @@ class CreateProductsTable extends Migration
         });
     }
 
-    /**
+    /** ALTER TABLE `products` ADD `price_usd` FLOAT(10) NULL AFTER `updated_at`, ADD `discount_usd` FLOAT(11) NULL AFTER `price_usd`;
      * Reverse the migrations.
      *
      * @return void

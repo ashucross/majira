@@ -28,6 +28,15 @@
                   <div class="text-center">
                     <h1 class="h4 text-gray-100 mb-4">Welcome Back!</h1>
                   </div>
+                  @if ($errors->any())
+                    <div class="alert alert-danger">
+                      <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                        @endforeach
+                      </ul>
+                    </div>
+                  @endif
                   <form class="user"  method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group">

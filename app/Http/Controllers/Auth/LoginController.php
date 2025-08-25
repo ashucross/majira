@@ -54,8 +54,7 @@ class LoginController extends Controller
     public function Callback($provider)
     {
         $userSocial =   Socialite::driver($provider)->stateless()->user();
-        $users      =   User::where(['email' => $userSocial->getEmail()])->first();
-        dd($users);
+        $users      =   User::where(['email' => $userSocial->getEmail()])->first(); 
         if($users){
             Auth::login($users);
             return redirect('/')->with('success','You are login from '.$provider);

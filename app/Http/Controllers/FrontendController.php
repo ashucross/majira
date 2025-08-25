@@ -20,8 +20,12 @@ use Illuminate\Http\Request;
 class FrontendController extends Controller
 {
    
-    public function index(Request $request){
-        return redirect()->route($request->user()->role);
+    public function index(Request $request){ 
+        if (Auth::check()) { 
+            return redirect()->route('home')->with('success','You have successfully logged in');
+        }
+    // not logged in → redirect to login or homepage
+    return redirect()->route('login');
     }
 
     public function home(){
@@ -347,6 +351,9 @@ class FrontendController extends Controller
 
     // Login
     public function login(){
+        if(Auth::user()){
+            return redirect()->route('home')->with('success','You have successfully logged in');
+        }
         return view('frontend.pages.login');
     }
     public function loginSubmit(Request $request){ 

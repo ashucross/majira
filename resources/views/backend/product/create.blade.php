@@ -67,20 +67,38 @@
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="price" class="col-form-label">Price(NRS) <span class="text-danger">*</span></label>
+        <div class="form-row">
+        <div class="form-group col-6">
+          <label for="price" class="col-form-label">Price(INR) <span class="text-danger">*</span></label>
           <input id="price" type="number" name="price" placeholder="Enter price"  value="{{old('price')}}" class="form-control">
           @error('price')
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
+        <div class="form-group col-6">
+          <label for="price" class="col-form-label">Price(USD) <span class="text-danger">*</span></label>
+          <input id="price" type="number" name="price_usd" placeholder="Enter price"  value="{{old('price_usd')}}" class="form-control">
+          @error('price_usd')
+          <span class="text-danger">{{$message}}</span>
+          @enderror
+        </div>
+        </div>
 
-        <div class="form-group">
-          <label for="discount" class="col-form-label">Discount(%)</label>
+ <div class="form-row">
+        <div class="form-group col-6">
+          <label for="discount" class="col-form-label">Discount(%) INR</label>
           <input id="discount" type="number" name="discount" min="0" max="100" placeholder="Enter discount"  value="{{old('discount')}}" class="form-control">
           @error('discount')
           <span class="text-danger">{{$message}}</span>
           @enderror
+        </div>
+        <div class="form-group col-6">
+          <label for="discount" class="col-form-label">Discount(%) USD</label>
+          <input id="discount" type="number" name="discount_usd" min="0" max="100" placeholder="Enter discount"  value="{{old('discount_usd')}}" class="form-control">
+          @error('discount_usd')
+          <span class="text-danger">{{$message}}</span>
+          @enderror
+        </div>
         </div>
         <div class="form-group">
           <label for="size">Size</label>

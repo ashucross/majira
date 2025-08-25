@@ -58,7 +58,9 @@ class ProductController extends Controller
         'status' => 'required|in:active,inactive',
         'condition' => 'required|in:default,new,hot',
         'price' => 'required|numeric',
+        'price_usd' => 'required|numeric',
         'discount' => 'nullable|numeric',
+        'discount_usd' => 'nullable|numeric',
     ]);
 
     // slug
@@ -227,7 +229,9 @@ class ProductController extends Controller
         'status' => 'required|in:active,inactive',
         'condition' => 'required|in:default,new,hot',
         'price' => 'required|numeric',
+        'price_usd' => 'required|numeric',
         'discount' => 'nullable|numeric',
+        'discount_usd' => 'nullable|numeric',
     ]);
 
     $validatedData['is_featured'] = $request->input('is_featured', 0);
@@ -335,8 +339,7 @@ public function deletePhoto(Request $request)
 {
     $product = Product::findOrFail($request->product_id);
 
-    $photos = explode(',', $product->photo);
-
+    $photos = explode(',', $product->photo); 
     // Remove selected photo
     $photos = array_filter($photos, function ($photo) use ($request) {
         return $photo !== $request->photo;
@@ -405,7 +408,9 @@ public function deletePhoto(Request $request)
             'status' => 'required|in:active,inactive',
             'condition' => 'required|in:default,new,hot',
             'price' => 'required|numeric',
+            'price_usd' => 'required|numeric',
             'discount' => 'nullable|numeric',
+            'discount_usd' => 'nullable|numeric',
         ]);
 
         $validatedData['is_featured'] = $request->input('is_featured', 0);

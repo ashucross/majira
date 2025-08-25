@@ -26,8 +26,7 @@ class CartController extends Controller
         if (empty($product)) {
             request()->session()->flash('error','Invalid Products');
             return back();
-        }
-
+        } 
         $already_cart = Cart::where('user_id', auth()->user()->id)->where('order_id',null)->where('product_id', $product->id)->first();
         // return $already_cart;
         if($already_cart) {

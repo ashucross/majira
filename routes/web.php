@@ -7,6 +7,7 @@
     use App\Http\Controllers\FrontendController;
     use App\Http\Controllers\Auth\LoginController;
     use App\Http\Controllers\MessageController;
+    use App\Http\Controllers\ProductController;
     use App\Http\Controllers\CartController;
     use App\Http\Controllers\WishlistController;
     use App\Http\Controllers\OrderController;
@@ -18,6 +19,9 @@
     use App\Http\Controllers\HomeController;
     use \UniSharp\LaravelFilemanager\Lfm;
     use App\Http\Controllers\Auth\ResetPasswordController;
+    use App\Http\Controllers\Auth\GoogleController;
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Session;
     /*
     |--------------------------------------------------------------------------
     | Web Routes
@@ -36,7 +40,9 @@
         return redirect()->back();
     })->name('cache.clear');
 
-
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('auth/google/silent', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogleSilent'])->name('google.redirect.silent');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
     // STORAGE LINKED ROUTE
     Route::get('storage-link',[AdminController::class,'storageLink'])->name('storage.link');
 
@@ -64,9 +70,20 @@
     Route::get('login/{provider}/callback/', [LoginController::class, 'Callback'])->name('login.callback');
 
     Route::get('/', [FrontendController::class, 'home'])->name('home');
+    // Route::get('/', function () {
+    //     // if (Auth::check()) {
+    //         return redirect()->route('home');
+    //     // }
+ 
+    //     // if (Session::has('google_logged_once')) {
+    //     //     return redirect()->route('google.redirect.silent');
+    //     // }
+ 
+    //     // return redirect()->route('google.redirect');
+    // });
 
 // Frontend Routes
-    Route::get('/home', [FrontendController::class, 'index']);
+    Route::get('/home', [FrontendController::class, 'home'])->name('home');
     Route::get('/about-us', [FrontendController::class, 'aboutUs'])->name('about-us');
     Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
     Route::post('/contact/message', [MessageController::class, 'store'])->name('contact.store');
@@ -129,8 +146,8 @@
 
 // Backend section start
 
-Route::post('/product/photo/delete', [ProductController::class, 'deletePhoto'])->name('product.photo.delete');
-    Route::group(['prefix' => '/admin', 'middleware' => ['auth', 'admin']], function () {
+Route::group(['prefix' => '/admin', 'middleware' => ['auth', 'admin']], function () {
+        Route::post('/photo/delete', [ProductController::class, 'deletePhoto'])->name('product.photo.delete');
         Route::get('/', [AdminController::class, 'index'])->name('admin');
         Route::get('/file-manager', function () {
             return view('backend.layouts.file-manager');

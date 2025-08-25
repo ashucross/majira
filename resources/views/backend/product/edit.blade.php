@@ -61,22 +61,39 @@
               
           </select>
         </div>
-
-        <div class="form-group">
+ <div class="form-row">
+        <div class="form-group col-6">
           <label for="price" class="col-form-label">Price(RS) <span class="text-danger">*</span></label>
           <input id="price" type="number" name="price" placeholder="Enter price"  value="{{$product->price}}" class="form-control">
           @error('price')
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
-
-        <div class="form-group">
-          <label for="discount" class="col-form-label">Discount(%)</label>
+        <div class="form-group col-6">
+          <label for="price_usd" class="col-form-label">Price(USD) <span class="text-danger">*</span></label>
+          <input id="price_usd" type="number" name="price_usd" placeholder="Enter price"  value="{{$product->price_usd}}" class="form-control">
+          @error('price_usd')
+          <span class="text-danger">{{$message}}</span>
+          @enderror
+</div>
+</div>
+ <div class="form-row">
+        <div class="form-group col-6">
+          <label for="discount" class="col-form-label">Discount(%) INR</label>
           <input id="discount" type="number" name="discount" min="0" max="100" placeholder="Enter discount"  value="{{$product->discount}}" class="form-control">
           @error('discount')
           <span class="text-danger">{{$message}}</span>
           @enderror
         </div>
+        <div class="form-group col-6">
+          <label for="discount" class="col-form-label">Discount(%) USD</label>
+          <input id="discount" type="number" name="discount_usd" min="0" max="100" placeholder="Enter discount"  value="{{$product->discount_usd}}" class="form-control">
+          @error('discount_usd')
+          <span class="text-danger">{{$message}}</span>
+          @enderror
+        </div>
+        </div>
+
         <div class="form-group">
           <label for="size">Size</label>
           <select name="size[]" class="form-control selectpicker"  multiple data-live-search="true">
@@ -211,25 +228,33 @@
 
 <script>
 
-  $(document).on('click', '.btn-delete-photo', function () {
+ $(document).on('click', '.btn-delete-photo', function () {
     let photoItem = $(this).closest('.photo-item');
     let photoPath = photoItem.data('photo');
 
-    $.ajax({
-        url: "{{ route('product.photo.delete') }}",
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            product_id: "{{ $product->id }}",
-            photo: photoPath
-        },
-        success: function (response) {
-            if (response.status === 'success') {
-                photoItem.remove();
+    if (confirm("Are you sure you want to delete this photo?")) {
+        $.ajax({
+            url: "{{ url('/admin/photo/delete') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                product_id: "{{ $product->id }}",
+                photo: photoPath
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    photoItem.remove();
+                } else {
+                    alert("Failed to delete photo. Please try again.");
+                }
+            },
+            error: function () {
+                alert("Something went wrong. Please try again.");
             }
-        }
-    });
+        });
+    }
 });
+
 
 
   var  child_cat_id='{{$product->child_cat_id}}';
