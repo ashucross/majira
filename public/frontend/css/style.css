@@ -4916,3 +4916,37 @@ svg.w-5.h-5 {
 /*=============================
 	End Footer CSS
 ===============================*/
+
+
+
+@media (max-width: 992px) {
+  img.logo_front {
+    height: 80px;
+}
+.topbar {
+    display: none;
+}
+span.slicknav_icon.slicknav_no-text {
+    margin-right: 26px;
+    margin-top: 24px;
+}
+.top-search {
+    margin-right: 27px;
+    margin-top: 24px;
+}
+.shop.single .product-des .product-buy {
+    margin-top: 0px;
+}
+.add-to-cart.mt-4 {
+    margin-top: 2px !important;
+}
+    .section {
+        padding: 0px 0px;
+    }
+	.owl-stage-outer {
+    margin-bottom: 56px;
+}
+section#Gslider {
+    display: none;
+}
+}

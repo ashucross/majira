@@ -84,7 +84,8 @@
                                                 @php 
                                                     $after_discount=($product_detail->price-(($product_detail->price*$product_detail->discount)/100));
                                                 @endphp
-												<p class="price"><span class="discount">${{number_format($after_discount,2)}}</span><s>{{number_format($product_detail->price,2)}}Rs</s> </p>
+												{{--<p class="price"><span class="discount">${{number_format($after_discount,2)}}</span><s>{{number_format($product_detail->price,2)}}Rs</s> </p>--}}
+												<div style="font-size:16px;" data-price="{{$product_detail->price ?? 0}}" data-discount="{{$product_detail->discount ?? 0}}" data-priceusd="{{$product_detail->price_usd ?? 0}}" data-discountusd="{{$product_detail->discount_usd ?? 0}}" class="product-price"></div>
 												<p class="description">{!!($product_detail->summary)!!}</p>
 											</div>
 											<!--/ End Description -->
@@ -343,14 +344,14 @@
                                     </div>
                                     <div class="product-content">
                                         <h3><a href="{{route('product-detail',$data->slug)}}">{{$data->title}}</a></h3>
-                                        <div class="product-price">
+                                       {{-- <div class="product-price">
                                             @php 
                                                 $after_discount=($data->price-(($data->discount*$data->price)/100));
                                             @endphp
                                             <span class="old">${{number_format($data->price,2)}}</span>
                                             <span>${{number_format($after_discount,2)}}</span>
-                                        </div>
-                                      
+                                        </div>--}}
+                                      <div style="font-size:16px;" data-price="{{$data->price ?? 0}}" data-discount="{{$data->discount ?? 0}}" data-priceusd="{{$data->price_usd ?? 0}}" data-discountusd="{{$data->discount_usd ?? 0}}" class="product-price"></div> 
                                     </div>
                                 </div>
                                 <!-- End Single Product -->
@@ -530,6 +531,58 @@
 @endpush
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script>
+window.onload = function() {
+    window.scrollTo(0, 0);
+
+
+	
+			  function calculatePrice(price, discount) {
+    return price - (price * discount / 100);
+}
+
+// Detect country using a free IP API
+fetch("https://ipapi.co/json/") 
+    .then(response => response.json())
+    .then(data => {
+        let country = data.country_name; 
+        let currency, symbol, priceAttr, discountAttr;
+
+        if (country === "India") {
+            currency = "Rs";
+            symbol = "";
+            priceAttr = "price";
+            discountAttr = "discount";
+        } else {
+            currency = "USD";
+            symbol = "$";
+            priceAttr = "priceusd";
+            discountAttr = "discountusd";
+        }
+
+        // Loop through all product-price elements
+        document.querySelectorAll(".product-price").forEach(el => {
+            let price = parseFloat(el.dataset[priceAttr]);
+            let discount = parseFloat(el.dataset[discountAttr]);
+            let afterDiscount = calculatePrice(price, discount);
+
+            el.innerHTML = `
+                <small>
+                    <del class="text-muted">${symbol}${price.toFixed(2)} ${currency === 'Rs' ? 'Rs' : ''}</del>
+                </small>
+                ${symbol}${afterDiscount.toFixed(2)} ${currency === 'Rs' ? 'Rs' : ''}
+            `;
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching location:", error);
+    });
+
+
+  };
+	</script>
+
+
 
     {{-- <script>
         $('.cart').click(function(){

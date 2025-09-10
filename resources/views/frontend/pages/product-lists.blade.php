@@ -116,10 +116,11 @@
                                             </div>
                                             <div class="content">
                                                 <h5><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h5>
-                                                @php
+                                               {{-- @php
                                                     $org=($product->price-($product->price*$product->discount)/100);
                                                 @endphp
-                                                <p class="price"><del class="text-muted">{{number_format($product->price,2)}}Rs</del>   {{number_format($org,2)}}Rs  </p>                                                
+                                                <p class="price"><del class="text-muted">{{number_format($product->price,2)}}Rs</del>   {{number_format($org,2)}}Rs  </p>   --}}     
+												<div style="font-size:16px;" data-price="{{$product->price ?? 0}}" data-discount="{{$product->discount ?? 0}}" data-priceusd="{{$product->price_usd ?? 0}}" data-discountusd="{{$product->discount_usd ?? 0}}" class="product-price"></div>                                        
                                             </div>
                                         </div>
                                         <!-- End Single Post -->
@@ -207,14 +208,13 @@
 												</div>
 												<div class="col-lg-8 col-md-6 col-12">
 													<div class="list-content">
-														<div class="product-content">
-															<div class="product-price">
-																@php
+														<div class="product-content"> 
+																{{--@php
 																	$after_discount=($product->price-($product->price*$product->discount)/100);
 																@endphp
 																<span>{{number_format($after_discount,2)}}Rs</span>
-																<del>{{number_format($product->price,2)}}Rs</del>
-															</div>
+																<del>{{number_format($product->price,2)}}Rs</del>--}}
+																<div style="font-size:16px;" data-price="{{$product->price ?? 0}}" data-discount="{{$product->discount ?? 0}}" data-priceusd="{{$product->price_usd ?? 0}}" data-discountusd="{{$product->discount_usd ?? 0}}" class="product-price"></div> 
 															<h3 class="title"><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h3>
 														{{-- <p>{!! html_entity_decode($product->summary) !!}</p> --}}
 														</div>
@@ -302,10 +302,12 @@
 														@endif
 													</div>
 												</div>
-												@php
+										{{--		@php
 													$after_discount=($product->price-($product->price*$product->discount)/100);
 												@endphp
-												<h3><small><del class="text-muted">{{number_format($product->price,2)}}Rs</del></small>    {{number_format($after_discount,2)}}Rs  </h3>
+												<h3><small><del class="text-muted">{{number_format($product->price,2)}}Rs</del></small>    {{number_format($after_discount,2)}}Rs  </h3>--}}
+
+												<div style="font-size:16px;" data-price="{{$product->price ?? 0}}" data-discount="{{$product->discount ?? 0}}" data-priceusd="{{$product->price_usd ?? 0}}" data-discountusd="{{$product->discount_usd ?? 0}}" class="product-price"></div>
 												<div class="quickview-peragraph">
 													<p>{!! html_entity_decode($product->summary) !!}</p>
 												</div>
@@ -413,6 +415,47 @@
 	</script> --}}
 	<script>
         $(document).ready(function(){
+
+			  function calculatePrice(price, discount) {
+    return price - (price * discount / 100);
+}
+
+// Detect country using a free IP API
+fetch("https://ipapi.co/json/") 
+    .then(response => response.json())
+    .then(data => {
+        let country = data.country_name; 
+        let currency, symbol, priceAttr, discountAttr;
+
+        if (country === "India") {
+            currency = "Rs";
+            symbol = "";
+            priceAttr = "price";
+            discountAttr = "discount";
+        } else {
+            currency = "USD";
+            symbol = "$";
+            priceAttr = "priceusd";
+            discountAttr = "discountusd";
+        }
+
+        // Loop through all product-price elements
+        document.querySelectorAll(".product-price").forEach(el => {
+            let price = parseFloat(el.dataset[priceAttr]);
+            let discount = parseFloat(el.dataset[discountAttr]);
+            let afterDiscount = calculatePrice(price, discount);
+
+            el.innerHTML = `
+                <small>
+                    <del class="text-muted">${symbol}${price.toFixed(2)} ${currency === 'Rs' ? 'Rs' : ''}</del>
+                </small>
+                ${symbol}${afterDiscount.toFixed(2)} ${currency === 'Rs' ? 'Rs' : ''}
+            `;
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching location:", error);
+    });
         /*----------------------------------------------------*/
         /*  Jquery Ui slider js
         /*----------------------------------------------------*/
