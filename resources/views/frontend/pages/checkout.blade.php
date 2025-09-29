@@ -24,7 +24,7 @@
     <!-- Start Checkout -->
     <section class="shop checkout section">
         <div class="container">
-                <form class="form" method="POST" action="{{route('cart.order')}}">
+                <form class="form" method="POST" id="checkoutForm" action="{{route('cart.order')}}">
                     @csrf
                     <div class="row"> 
 
@@ -37,7 +37,7 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>First Name<span>*</span></label>
-                                            <input type="text" name="first_name" placeholder="" value="{{old('first_name')}}" value="{{old('first_name')}}">
+                                            <input type="text" name="first_name" required placeholder="" value="{{old('first_name')}}" value="{{old('first_name')}}">
                                             @error('first_name')
                                                 <span class='text-danger'>{{$message}}</span>
                                             @enderror
@@ -46,7 +46,7 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Last Name<span>*</span></label>
-                                            <input type="text" name="last_name" placeholder="" value="{{old('lat_name')}}">
+                                            <input type="text" name="last_name" required placeholder="" value="{{old('lat_name')}}">
                                             @error('last_name')
                                                 <span class='text-danger'>{{$message}}</span>
                                             @enderror
@@ -55,7 +55,7 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Email Address<span>*</span></label>
-                                            <input type="email" name="email" placeholder="" value="{{old('email')}}">
+                                            <input type="email" name="email" required placeholder="" value="{{old('email')}}">
                                             @error('email')
                                                 <span class='text-danger'>{{$message}}</span>
                                             @enderror
@@ -64,7 +64,7 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Phone Number <span>*</span></label>
-                                            <input type="number" name="phone" placeholder="" required value="{{old('phone')}}">
+                                            <input type="number" name="phone" required placeholder="" required value="{{old('phone')}}">
                                             @error('phone')
                                                 <span class='text-danger'>{{$message}}</span>
                                             @enderror
@@ -73,7 +73,7 @@
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Country<span>*</span></label>
-                                            <select name="country" id="country">
+                                            <select name="country" required id="country">
                                                 <option value="AF">Afghanistan</option>
                                                 <option value="AX">Åland Islands</option>
                                                 <option value="AL">Albania</option>
@@ -324,8 +324,8 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label>Address Line 1<span>*</span></label>
-                                            <input type="text" name="address1" placeholder="" value="{{old('address1')}}">
+                                            <label>Delivery Address<span>*</span></label>
+                                            <input type="text" name="address1" required placeholder="" required value="{{old('address1')}}">
                                             @error('address1')
                                                 <span class='text-danger'>{{$message}}</span>
                                             @enderror
@@ -363,12 +363,12 @@
                                         <ul>
 										    <li class="order_subtotal" data-price="{{Helper::totalCartPrice()}}">Cart Subtotal<span>{{number_format(Helper::totalCartPrice(),2)}}Rs</span></li>
                                             <li class="shipping">
-                                                Shipping Cost
+                                                Shipping Cost <span>*</span>
                                                 @if(count(Helper::shipping())>0 && Helper::cartCount()>0)
-                                                    <select name="shipping" class="nice-select">
-                                                        <option value="">Select your address</option>
+                                                    <select name="shipping" class="nice-select" id="shipping">
+                                                        <option value="">Select Shipping Charges</option>
                                                         @foreach(Helper::shipping() as $shipping)
-                                                        <option value="{{$shipping->id}}" class="shippingOption" data-price="{{$shipping->price}}">{{$shipping->type}}: {{$shipping->price}}Rs</option>
+                                                        <option value="{{$shipping->id}}" class="shippingOption" data-price="{{$shipping->price}}">{{$shipping->type}}: {{$shipping->price}}</option>
                                                         @endforeach
                                                     </select>
                                                 @else 
@@ -401,8 +401,9 @@
                                         <div class="checkbox">
                                             {{-- <label class="checkbox-inline" for="1"><input name="updates" id="1" type="checkbox"> Check Payments</label> --}}
                                             <form-group>
-                                                <input name="payment_method"  type="radio" value="cod"> <label> Cash On Delivery</label><br>
-                                                <input name="payment_method"  type="radio" value="paypal"> <label> PayPal</label> 
+                                                 <label><input name="payment_method" required  type="radio" value="cod"> Cash On Delivery</label><br>
+                                                <!-- <input name="payment_method" required  type="radio" value="paypal"> <label> PayPal</label>  -->
+                                                 <label><input name="payment_method" required  type="radio" value="cashfree">  Cashfree</label> 
                                             </form-group>
                                             
                                         </div>
@@ -420,7 +421,7 @@
                                 <div class="single-widget get-button">
                                     <div class="content">
                                         <div class="button">
-                                            <button type="submit" class="btn">proceed to checkout</button>
+                                            <button type="submit" class="btn" id="checkoutForm">proceed to checkout</button>
                                         </div>
                                     </div>
                                 </div>
@@ -574,6 +575,13 @@
 				// alert(coupon);
 				$('#order_total_price span').text('$'+(subtotal + cost-coupon).toFixed(2));
 			});
+              $("#checkoutForm").on("submit", function (e) {
+                if ($("#shipping").val() === "") {
+                    e.preventDefault();
+                    alert("Please select a shipping option before proceeding to checkout.");
+                    return false;
+                }
+            });
 
 		});
 

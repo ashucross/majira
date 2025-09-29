@@ -95,7 +95,7 @@
                                         @endphp
                                         <div class="single-post first">
                                             <div class="image">
-                                                <img src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                                <img src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
                                             </div>
                                             <div class="content">
                                                 <h5><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h5>
@@ -171,8 +171,8 @@
                                                     @php
                                                         $photo=explode(',',$product->photo);
                                                     @endphp
-                                                    <img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-                                                    <img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                                    <img class="default-img" src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
+                                                    <img class="hover-img" src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
                                                     @if($product->discount)
                                                                 <span class="price-dec">{{$product->discount}} % Off</span>
                                                     @endif
@@ -183,7 +183,12 @@
                                                         <a title="Wishlist" href="{{route('add-to-wishlist',$product->slug)}}" class="wishlist" data-id="{{$product->id}}"><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
                                                     </div>
                                                     <div class="product-action-2">
-                                                        <a title="Add to cart" href="{{route('add-to-cart',$product->slug)}}">Add to cart</a>
+                                                         @if($product->stock)
+                                                            <p class="available">Available: <span>{{$product->stock}} In Stock</span></p>
+                                                            <a title="Add to cart" href="{{route('add-to-cart',$product->slug)}}">Add to Cart</a>
+                                                        @else
+                                                            <p class="available"> Not Available: <span class="text-danger">Out of Stock</span></p>
+                                                        @endif 
                                                     </div>
                                                 </div>
                                             </div>
@@ -208,7 +213,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 justify-content-center d-flex mt-5">
-                                {{$products->appends($_GET)->links()}}
+                                {{$products->appends($_GET)->links('pagination::bootstrap-4')}}
                             </div>
                           </div>
 

@@ -84,7 +84,7 @@
                             @php
                               $photo=explode(',',$product->photo); 
                             @endphp
-                            <img src="{{asset($photo[0])}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->photo}}">
+                            <img src="{{asset($photo[0])}}" class="img-fluid zoom" style="max-width:80px" alt="image">
                         @else
                             <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
                         @endif
@@ -108,7 +108,7 @@
             @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$products->links()}}</span>
+        <span style="float:right">{{$products->links('pagination::bootstrap-4') }}</span>
         @else
           <h6 class="text-center">No Products found!!! Please create Product</h6>
         @endif

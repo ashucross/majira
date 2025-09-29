@@ -16,6 +16,7 @@
     use App\Http\Controllers\CouponController;
     use App\Http\Controllers\PayPalController;
     use App\Http\Controllers\NotificationController;
+    use App\Http\Controllers\CashfreeController;
     use App\Http\Controllers\HomeController;
     use \UniSharp\LaravelFilemanager\Lfm;
     use App\Http\Controllers\Auth\ResetPasswordController;
@@ -101,6 +102,14 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
     Route::get('/cart', function () {
         return view('frontend.pages.cart');
     })->name('cart');
+
+
+
+    Route::get('/cashfree/pay/{order_id}', [CashfreeController::class, 'pay'])->name('cashfree.pay');
+Route::post('/cashfree/callback', [CashfreeController::class, 'callback'])->name('cashfree.callback');
+
+
+
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout')->middleware('user');
 // Wishlist
     Route::get('/wishlist', function () {

@@ -15,8 +15,7 @@ class CartController extends Controller
         $this->product=$product;
     }
 
-    public function addToCart(Request $request){
-        // dd($request->all());
+    public function addToCart(Request $request){ 
         if (empty($request->slug)) {
             request()->session()->flash('error','Invalid Products');
             return back();
@@ -52,6 +51,8 @@ class CartController extends Controller
         request()->session()->flash('success','Product successfully added to cart');
         return back();       
     }  
+
+    
 
     public function singleAddToCart(Request $request){
         $request->validate([

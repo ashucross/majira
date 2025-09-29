@@ -16,7 +16,16 @@
 @endsection
 @section('title','Majira|| PRODUCT DETAIL')
 @section('main-content')
-
+<style>
+.shop.single .product-gallery .slides li
+ {
+    position: relative;
+    max-height: 550px;
+}
+.shop.single .flex-control-thumbs li img {
+    height: 94px !important;
+}
+	</style>
 		<!-- Breadcrumbs -->
 		<div class="breadcrumbs">
 			<div class="container">
@@ -326,8 +335,8 @@
 											@php 
 												$photo=explode(',',$data->photo);
 											@endphp
-                                            <img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-                                            <img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                            <img class="default-img" src="{{url($photo[0])}}" alt="#">
+                                            <img class="hover-img" src="{{url($photo[0])}}" alt="#">
                                             <span class="price-dec">{{$data->discount}} % Off</span>
                                                                     {{-- <span class="out-of-stock">Hot</span> --}}
                                         </a>
@@ -338,7 +347,12 @@
                                                 <a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
                                             </div>
                                             <div class="product-action-2">
-                                                <a title="Add to cart" href="#">Add to cart</a>
+                                                @if($data->stock)
+                                                <p class="available">Available: <span>{{$data->stock}} In Stock</span></p>
+                                                <a title="Add to cart" href="{{route('add-to-cart',$data->slug)}}">Add to Cart</a>
+                                            @else
+                                                <p class="available"> Not Available: <span class="text-danger">Out of Stock</span></p>
+                                            @endif 
                                             </div>
                                         </div>
                                     </div>

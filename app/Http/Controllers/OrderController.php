@@ -52,9 +52,9 @@ class OrderController extends Controller
             'coupon'=>'nullable|numeric',
             'phone'=>'numeric|required',
             'post_code'=>'string|nullable',
-            'email'=>'string|required'
-        ]);
-        // return $request->all();
+            'email'=>'string|required',
+            'payment_method'=>'string|required'
+        ]); 
 
         if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
             request()->session()->flash('error','Cart is Empty !');
@@ -87,6 +87,7 @@ class OrderController extends Controller
         //             $total_prod+=$cart_items['quantity'];
         //         }
         // }
+        //ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cod','paypal','cashfree') NOT NULL;
 
         $order=new Order();
         $order_data=$request->all();
@@ -118,13 +119,17 @@ class OrderController extends Controller
         }
         // return $order_data['total_amount'];
         $order_data['status']="new";
-        if(request('payment_method')=='paypal'){
-            $order_data['payment_method']='paypal';
-            $order_data['payment_status']='paid';
+       if(request('payment_method') == 'paypal'){
+            $order_data['payment_method'] = 'paypal';
+            $order_data['payment_status'] = 'paid';
+        }
+        elseif(request('payment_method') == 'cashfree'){
+            $order_data['payment_method'] = 'cashfree';
+            $order_data['payment_status'] = 'unpaid'; // until Cashfree confirms
         }
         else{
-            $order_data['payment_method']='cod';
-            $order_data['payment_status']='Unpaid';
+            $order_data['payment_method'] = 'cod';
+            $order_data['payment_status'] = 'unpaid';
         }
         $order->fill($order_data);
         $status=$order->save();
@@ -139,6 +144,9 @@ class OrderController extends Controller
         Notification::send($users, new StatusNotification($details));
         if(request('payment_method')=='paypal'){
             return redirect()->route('payment')->with(['id'=>$order->id]);
+        }
+        elseif(request('payment_method') == 'cashfree'){ 
+            return redirect()->route('cashfree.pay', ['order_id' => $order->id]);
         }
         else{
             session()->forget('cart');
@@ -234,7 +242,7 @@ class OrderController extends Controller
         }
     }
 
-    public function orderTrack(){
+    public function orderTrack(){ 
         return view('frontend.pages.order-track');
     }
 

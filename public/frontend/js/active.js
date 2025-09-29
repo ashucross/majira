@@ -38,7 +38,7 @@ window.onload = () => {
 	  navigator.serviceWorker
 			   .register('./sw.js');
 	}
-  }
+  }			
 (function($) {
     "use strict";
      $(document).on('ready', function() {	

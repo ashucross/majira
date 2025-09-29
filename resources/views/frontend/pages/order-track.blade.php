@@ -2,7 +2,7 @@
 
 @section('title','Majira|| Order Track Page')
 
-@section('main-content')
+@section('main-content') 
     <!-- Breadcrumbs -->
     <div class="breadcrumbs">
         <div class="container">
@@ -35,5 +35,5 @@
             </form>
         </div>
     </div>
-</section>
+</section> 
 @endsection

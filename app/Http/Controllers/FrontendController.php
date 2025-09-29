@@ -33,7 +33,7 @@ class FrontendController extends Controller
         $posts=Post::where('status','active')->orderBy('id','DESC')->limit(3)->get();
         $banners=Banner::where('status','active')->limit(3)->orderBy('id','DESC')->get();
         // return $banner;
-        $products=Product::where('status','active')->orderBy('id','DESC')->limit(8)->get();
+       $products = Product::where('status', 'active')->limit(16)->inRandomOrder()->get();
         $category=Category::where('status','active')->where('is_parent',1)->orderBy('title','ASC')->get();
         // return $category;
         return view('frontend.index')
@@ -44,7 +44,15 @@ class FrontendController extends Controller
                 ->with('category_lists',$category);
     }   
 
-    public function aboutUs(){
+    public function getCategoryProducts($id)
+{
+    $products = Product::where('status', 'active')
+        ->where('cat_id', $id)
+        ->paginate(20); // or ->limit(20)
+    return view('frontend.partials.product-grid', compact('products'));
+}
+
+    public function aboutUs(){ 
         return view('frontend.pages.about-us');
     }
 
@@ -379,24 +387,29 @@ class FrontendController extends Controller
     public function register(){
         return view('frontend.pages.register');
     }
-    public function registerSubmit(Request $request){
-        // return $request->all();
-        $this->validate($request,[
-            'name'=>'string|required|min:2',
-            'email'=>'string|required|unique:users,email',
-            'password'=>'required|min:6|confirmed',
+    public function registerSubmit(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'string|required|min:2',
+            'email' => 'string|required|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
-        $data=$request->all();
-        // dd($data);
-        $check=$this->create($data);
-        Session::put('user',$data['email']);
-        if($check){
-            request()->session()->flash('success','Successfully registered');
-            return redirect()->route('home');
-        }
-        else{
-            request()->session()->flash('error','Please try again!');
-            return back();
+
+        $data = $request->all();       
+        $user = $this->create($data);
+
+        if ($user) {
+            // log the user in
+            Auth::login($user);
+
+            // flash success
+            $request->session()->flash('success', 'Successfully registered & logged in.');
+
+            // redirect to home
+            return redirect()->back();
+        } else {
+            $request->session()->flash('error', 'Please try again!');
+            return redirect()->back();
         }
     }
     public function create(array $data){

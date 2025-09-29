@@ -35,8 +35,15 @@ class Category extends Model
         return $this->hasMany('App\Models\Product','child_cat_id','id')->where('status','active');
     }
     public static function getProductByCat($slug){
+        $category = Category::where('slug',$slug)->first(); 
+        if($category){
+            if($category->is_parent==1){
+                return Category::with('products')->where('slug',$slug)->first();
+            }else{
+                return Category::with('sub_products')->where('slug',$slug)->first();
+            }
+        }
         // dd($slug);
-        return Category::with('products')->where('slug',$slug)->first();
         // return Product::where('cat_id',$id)->where('child_cat_id',null)->paginate(10);
     }
     public static function getProductBySubCat($slug){

@@ -112,7 +112,7 @@
                                         @endphp
                                         <div class="single-post first">
                                             <div class="image">
-                                                <img src="{{$photo[0]}}" alt="{{$photo[0]}}">
+                                                <img src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
                                             </div>
                                             <div class="content">
                                                 <h5><a href="{{route('product-detail',$product->slug)}}">{{$product->title}}</a></h5>
@@ -191,8 +191,8 @@
 															@php 
 																$photo=explode(',',$product->photo);
 															@endphp
-															<img class="default-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
-															<img class="hover-img" src="{{$photo[0]}}" alt="{{$photo[0]}}">
+															<img class="default-img" src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
+															<img class="hover-img" src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}">
 															</a>
 															<div class="button-head">
 																<div class="product-action">
@@ -219,7 +219,12 @@
 														{{-- <p>{!! html_entity_decode($product->summary) !!}</p> --}}
 														</div>
 														<p class="des pt-2">{!! html_entity_decode($product->summary) !!}</p>
-														<a href="javascript:void(0)" class="btn cart" data-id="{{$product->id}}">Buy Now!</a>
+														@if($product->stock)
+															<p class="available">Available: <span>{{$product->stock}} In Stock</span></p>
+															<a title="Add to cart" href="{{route('add-to-cart',$product->slug)}}">Buy Now!</a>
+														@else
+															<p class="available">Available: <span class="text-danger">Out of Stock</span></p>
+														@endif
 													</div>
 												</div>
 											</div>
@@ -365,19 +370,7 @@
 			<!-- Modal end -->
 @endsection
 @push ('styles')
-<style>
-	 .pagination{
-        display:inline-flex;
-    }
-	.filter_button{
-        /* height:20px; */
-        text-align: center;
-        background:#F7941D;
-        padding:8px 16px;
-        margin-top:10px;
-        color: white;
-    }
-</style>
+
 @endpush
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
