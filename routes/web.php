@@ -18,6 +18,7 @@
     use App\Http\Controllers\NotificationController;
     use App\Http\Controllers\CashfreeController;
     use App\Http\Controllers\HomeController;
+    use App\Http\Controllers\PaymentController;
     use \UniSharp\LaravelFilemanager\Lfm;
     use App\Http\Controllers\Auth\ResetPasswordController;
     use App\Http\Controllers\Auth\GoogleController;
@@ -46,9 +47,9 @@ Route::get('auth/google/silent', [App\Http\Controllers\Auth\GoogleController::cl
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
     // STORAGE LINKED ROUTE
     Route::get('storage-link',[AdminController::class,'storageLink'])->name('storage.link');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
-
-    Auth::routes(['register' => false]);
+    Auth::routes(['register' => false,'verify' => true]);
 
     Route::get('user/login', [FrontendController::class, 'login'])->name('login.form');
     Route::post('user/login', [FrontendController::class, 'loginSubmit'])->name('login.submit');
@@ -108,7 +109,8 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
     Route::get('/cashfree/pay/{order_id}', [CashfreeController::class, 'pay'])->name('cashfree.pay');
 Route::post('/cashfree/callback', [CashfreeController::class, 'callback'])->name('cashfree.callback');
 
-
+Route::get('/razorpay/pay/{order_id}', [PaymentController::class, 'razorpayPay'])->name('razorpay.pay');
+Route::post('/razorpay/payment/success', [PaymentController::class, 'razorpaySuccess'])->name('razorpay.success');
 
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout')->middleware('user');
 // Wishlist

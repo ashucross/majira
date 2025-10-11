@@ -43,121 +43,206 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $this->validate($request,[
-            'first_name'=>'string|required',
-            'last_name'=>'string|required',
-            'address1'=>'string|required',
-            'address2'=>'string|nullable',
-            'coupon'=>'nullable|numeric',
-            'phone'=>'numeric|required',
-            'post_code'=>'string|nullable',
-            'email'=>'string|required',
-            'payment_method'=>'string|required'
-        ]); 
+{
+    $this->validate($request, [
+        'first_name' => 'string|required',
+        'last_name' => 'string|required',
+        'address1' => 'string|required',
+        'address2' => 'string|nullable',
+        'coupon' => 'nullable|numeric',
+        'phone' => 'numeric|required',
+        'post_code' => 'string|nullable',
+        'email' => 'string|required',
+        'payment_method' => 'string|required'
+    ]);
 
-        if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
-            request()->session()->flash('error','Cart is Empty !');
-            return back();
-        }
-        // $cart=Cart::get();
-        // // return $cart;
-        // $cart_index='ORD-'.strtoupper(uniqid());
-        // $sub_total=0;
-        // foreach($cart as $cart_item){
-        //     $sub_total+=$cart_item['amount'];
-        //     $data=array(
-        //         'cart_id'=>$cart_index,
-        //         'user_id'=>$request->user()->id,
-        //         'product_id'=>$cart_item['id'],
-        //         'quantity'=>$cart_item['quantity'],
-        //         'amount'=>$cart_item['amount'],
-        //         'status'=>'new',
-        //         'price'=>$cart_item['price'],
-        //     );
-
-        //     $cart=new Cart();
-        //     $cart->fill($data);
-        //     $cart->save();
-        // }
-
-        // $total_prod=0;
-        // if(session('cart')){
-        //         foreach(session('cart') as $cart_items){
-        //             $total_prod+=$cart_items['quantity'];
-        //         }
-        // }
-        //ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cod','paypal','cashfree') NOT NULL;
-
-        $order=new Order();
-        $order_data=$request->all();
-        $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
-        $order_data['user_id']=$request->user()->id;
-        $order_data['shipping_id']=$request->shipping;
-        $shipping=Shipping::where('id',$order_data['shipping_id'])->pluck('price');
-        // return session('coupon')['value'];
-        $order_data['sub_total']=Helper::totalCartPrice();
-        $order_data['quantity']=Helper::cartCount();
-        if(session('coupon')){
-            $order_data['coupon']=session('coupon')['value'];
-        }
-        if($request->shipping){
-            if(session('coupon')){
-                $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0]-session('coupon')['value'];
-            }
-            else{
-                $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0];
-            }
-        }
-        else{
-            if(session('coupon')){
-                $order_data['total_amount']=Helper::totalCartPrice()-session('coupon')['value'];
-            }
-            else{
-                $order_data['total_amount']=Helper::totalCartPrice();
-            }
-        }
-        // return $order_data['total_amount'];
-        $order_data['status']="new";
-       if(request('payment_method') == 'paypal'){
-            $order_data['payment_method'] = 'paypal';
-            $order_data['payment_status'] = 'paid';
-        }
-        elseif(request('payment_method') == 'cashfree'){
-            $order_data['payment_method'] = 'cashfree';
-            $order_data['payment_status'] = 'unpaid'; // until Cashfree confirms
-        }
-        else{
-            $order_data['payment_method'] = 'cod';
-            $order_data['payment_status'] = 'unpaid';
-        }
-        $order->fill($order_data);
-        $status=$order->save();
-        if($order)
-        // dd($order->id);
-        $users=User::where('role','admin')->first();
-        $details=[
-            'title'=>'New order created',
-            'actionURL'=>route('order.show',$order->id),
-            'fas'=>'fa-file-alt'
-        ];
-        Notification::send($users, new StatusNotification($details));
-        if(request('payment_method')=='paypal'){
-            return redirect()->route('payment')->with(['id'=>$order->id]);
-        }
-        elseif(request('payment_method') == 'cashfree'){ 
-            return redirect()->route('cashfree.pay', ['order_id' => $order->id]);
-        }
-        else{
-            session()->forget('cart');
-            session()->forget('coupon');
-        }
-        Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
-
-        // dd($users);        
-        request()->session()->flash('success','Your product successfully placed in order');
-        return redirect()->route('home');
+    if (empty(Cart::where('user_id', auth()->user()->id)->where('order_id', null)->first())) {
+        request()->session()->flash('error', 'Cart is Empty!');
+        return back();
     }
+
+    $order = new Order();
+    $order_data = $request->all();
+    $order_data['order_number'] = 'ORD-' . strtoupper(Str::random(10));
+    $order_data['user_id'] = $request->user()->id;
+    $order_data['shipping_id'] = $request->shipping;
+
+    $shipping = Shipping::where('id', $order_data['shipping_id'])->pluck('price');
+    $order_data['sub_total'] = Helper::totalCartPrice();
+    $order_data['quantity'] = Helper::cartCount();
+
+    if (session('coupon')) {
+        $order_data['coupon'] = session('coupon')['value'];
+    }
+
+    if ($request->shipping) {
+        if (session('coupon')) {
+            $order_data['total_amount'] = Helper::totalCartPrice() + $shipping[0] - session('coupon')['value'];
+        } else {
+            $order_data['total_amount'] = Helper::totalCartPrice() + $shipping[0];
+        }
+    } else {
+        if (session('coupon')) {
+            $order_data['total_amount'] = Helper::totalCartPrice() - session('coupon')['value'];
+        } else {
+            $order_data['total_amount'] = Helper::totalCartPrice();
+        }
+    }
+
+    $order_data['status'] = "new";
+
+    if (request('payment_method') == 'razorpay') {
+        $order_data['payment_method'] = 'razorpay';
+        $order_data['payment_status'] = 'unpaid'; // until Razorpay confirms
+    } else {
+        $order_data['payment_method'] = 'cod';
+        $order_data['payment_status'] = 'unpaid';
+    }
+
+    $order->fill($order_data);
+    $status = $order->save();
+
+    if ($order) {
+        $admin = User::where('role', 'admin')->first();
+        $details = [
+            'title' => 'New order created',
+            'actionURL' => route('order.show', $order->id),
+            'fas' => 'fa-file-alt'
+        ];
+        Notification::send($admin, new StatusNotification($details));
+    }
+
+    if (request('payment_method') == 'razorpay') {
+        return redirect()->route('razorpay.pay', ['order_id' => $order->id]);
+    } else {
+        session()->forget('cart');
+        session()->forget('coupon');
+    }
+
+    Cart::where('user_id', auth()->user()->id)
+        ->where('order_id', null)
+        ->update(['order_id' => $order->id]);
+
+    request()->session()->flash('success', 'Your order has been placed successfully!');
+    return redirect()->route('home');
+}
+
+    // public function store(Request $request)
+    // {
+    //     $this->validate($request,[
+    //         'first_name'=>'string|required',
+    //         'last_name'=>'string|required',
+    //         'address1'=>'string|required',
+    //         'address2'=>'string|nullable',
+    //         'coupon'=>'nullable|numeric',
+    //         'phone'=>'numeric|required',
+    //         'post_code'=>'string|nullable',
+    //         'email'=>'string|required',
+    //         'payment_method'=>'string|required'
+    //     ]); 
+
+    //     if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
+    //         request()->session()->flash('error','Cart is Empty !');
+    //         return back();
+    //     }
+    //     // $cart=Cart::get();
+    //     // // return $cart;
+    //     // $cart_index='ORD-'.strtoupper(uniqid());
+    //     // $sub_total=0;
+    //     // foreach($cart as $cart_item){
+    //     //     $sub_total+=$cart_item['amount'];
+    //     //     $data=array(
+    //     //         'cart_id'=>$cart_index,
+    //     //         'user_id'=>$request->user()->id,
+    //     //         'product_id'=>$cart_item['id'],
+    //     //         'quantity'=>$cart_item['quantity'],
+    //     //         'amount'=>$cart_item['amount'],
+    //     //         'status'=>'new',
+    //     //         'price'=>$cart_item['price'],
+    //     //     );
+
+    //     //     $cart=new Cart();
+    //     //     $cart->fill($data);
+    //     //     $cart->save();
+    //     // }
+
+    //     // $total_prod=0;
+    //     // if(session('cart')){
+    //     //         foreach(session('cart') as $cart_items){
+    //     //             $total_prod+=$cart_items['quantity'];
+    //     //         }
+    //     // }
+    //     //ALTER TABLE orders MODIFY COLUMN payment_method ENUM('cod','paypal','cashfree') NOT NULL;
+
+    //     $order=new Order();
+    //     $order_data=$request->all();
+    //     $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
+    //     $order_data['user_id']=$request->user()->id;
+    //     $order_data['shipping_id']=$request->shipping;
+    //     $shipping=Shipping::where('id',$order_data['shipping_id'])->pluck('price');
+    //     // return session('coupon')['value'];
+    //     $order_data['sub_total']=Helper::totalCartPrice();
+    //     $order_data['quantity']=Helper::cartCount();
+    //     if(session('coupon')){
+    //         $order_data['coupon']=session('coupon')['value'];
+    //     }
+    //     if($request->shipping){
+    //         if(session('coupon')){
+    //             $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0]-session('coupon')['value'];
+    //         }
+    //         else{
+    //             $order_data['total_amount']=Helper::totalCartPrice()+$shipping[0];
+    //         }
+    //     }
+    //     else{
+    //         if(session('coupon')){
+    //             $order_data['total_amount']=Helper::totalCartPrice()-session('coupon')['value'];
+    //         }
+    //         else{
+    //             $order_data['total_amount']=Helper::totalCartPrice();
+    //         }
+    //     }
+    //     // return $order_data['total_amount'];
+    //     $order_data['status']="new";
+    //    if(request('payment_method') == 'paypal'){
+    //         $order_data['payment_method'] = 'paypal';
+    //         $order_data['payment_status'] = 'paid';
+    //     }
+    //     elseif(request('payment_method') == 'cashfree'){
+    //         $order_data['payment_method'] = 'cashfree';
+    //         $order_data['payment_status'] = 'unpaid'; // until Cashfree confirms
+    //     }
+    //     else{
+    //         $order_data['payment_method'] = 'cod';
+    //         $order_data['payment_status'] = 'unpaid';
+    //     }
+    //     $order->fill($order_data);
+    //     $status=$order->save();
+    //     if($order)
+    //     // dd($order->id);
+    //     $users=User::where('role','admin')->first();
+    //     $details=[
+    //         'title'=>'New order created',
+    //         'actionURL'=>route('order.show',$order->id),
+    //         'fas'=>'fa-file-alt'
+    //     ];
+    //     Notification::send($users, new StatusNotification($details));
+    //     if(request('payment_method')=='paypal'){
+    //         return redirect()->route('payment')->with(['id'=>$order->id]);
+    //     }
+    //     elseif(request('payment_method') == 'cashfree'){ 
+    //         return redirect()->route('cashfree.pay', ['order_id' => $order->id]);
+    //     }
+    //     else{
+    //         session()->forget('cart');
+    //         session()->forget('coupon');
+    //     }
+    //     Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
+
+    //     // dd($users);        
+    //     request()->session()->flash('success','Your product successfully placed in order');
+    //     return redirect()->route('home');
+    // }
 
     /**
      * Display the specified resource.

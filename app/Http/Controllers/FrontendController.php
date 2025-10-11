@@ -21,9 +21,7 @@ class FrontendController extends Controller
 {
    
     public function index(Request $request){ 
-        if (Auth::check()) { 
-            return redirect()->route('home')->with('success','You have successfully logged in');
-        }
+        
     // not logged in → redirect to login or homepage
     return redirect()->route('login');
     }
@@ -360,22 +358,42 @@ class FrontendController extends Controller
     // Login
     public function login(){
         if(Auth::user()){
-            return redirect()->route('home')->with('success','You have successfully logged in');
+            return redirect('product-grids');
         }
         return view('frontend.pages.login');
     }
-    public function loginSubmit(Request $request){ 
-        $data= $request->all();
-        if(Auth::attempt(['email' => $data['email'], 'password' => $data['password'],'status'=>'active'])){
-            Session::put('user',$data['email']);
-            request()->session()->flash('success','Successfully login');
-            return redirect()->route('home');
-        }
-        else{
-            request()->session()->flash('error','Invalid email and password pleas try again!');
-            return redirect()->back();
-        }
+   public function loginSubmit(Request $request)
+{
+    $validator = \Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|min:6',
+    ], [
+        'email.required' => 'Please enter your email address.',
+        'email.email' => 'Please enter a valid email address.',
+        'password.required' => 'Please enter your password.',
+        'password.min' => 'Password must be at least 6 characters long.',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'status' => 'active'])) {
+        Session::put('user', $request->email);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Login successful! Redirecting...',
+            'redirect_url' => url()->previous(), // or route('dashboard')
+        ]);
+    }
+
+    return response()->json([
+        'status' => false,
+        'message' => 'Invalid email or password, please try again.',
+    ]);
+}
+
 
     public function logout(){
         Session::forget('user');
@@ -384,34 +402,40 @@ class FrontendController extends Controller
         return back();
     }
 
-    public function register(){
+    public function register(Request $request){ 
         return view('frontend.pages.register');
     }
-    public function registerSubmit(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'string|required|min:2',
-            'email' => 'string|required|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-        ]);
+   public function registerSubmit(Request $request)
+{
+    $validator = \Validator::make($request->all(), [
+    'name' => 'string|required|min:2',
+    'email' => 'required|string|email:rfc,dns|unique:users,email',
+    'password' => [
+        'required',
+        'string',
+        'min:6',
+        'confirmed',
+        'regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'
+    ],
+], [
+    'email.email' => 'Please enter a valid email address.',
+    'password.regex' => 'Password must contain at least one uppercase letter and one special character.',
+]);
 
-        $data = $request->all();       
-        $user = $this->create($data);
-
-        if ($user) {
-            // log the user in
-            Auth::login($user);
-
-            // flash success
-            $request->session()->flash('success', 'Successfully registered & logged in.');
-
-            // redirect to home
-            return redirect()->back();
-        } else {
-            $request->session()->flash('error', 'Please try again!');
-            return redirect()->back();
-        }
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    $data = $request->all();
+    $user = $this->create($data);
+
+    if ($user) {
+        Auth::login($user);
+        return response()->json(['success' => true, 'message' => 'Successfully registered.']);
+    } else {
+        return response()->json(['success' => false, 'message' => 'Please try again!']);
+    }
+}
     public function create(array $data){
         return User::create([
             'name'=>$data['name'],

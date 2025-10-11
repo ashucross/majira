@@ -14,6 +14,9 @@
         margin-top:10px;
         color: white;
     }
+	img.logo_front {
+    margin-bottom: -34px;
+}
 </style>
 </head>
 <body class="js">

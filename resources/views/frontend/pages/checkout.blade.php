@@ -403,7 +403,7 @@
                                             <form-group>
                                                  <label><input name="payment_method" required  type="radio" value="cod"> Cash On Delivery</label><br>
                                                 <!-- <input name="payment_method" required  type="radio" value="paypal"> <label> PayPal</label>  -->
-                                                 <label><input name="payment_method" required  type="radio" value="cashfree">  Cashfree</label> 
+                                                 <label><input name="payment_method" required  type="radio" value="razorpay">  Razorpay</label> 
                                             </form-group>
                                             
                                         </div>
@@ -573,7 +573,7 @@
 				let subtotal = parseFloat( $('.order_subtotal').data('price') ); 
 				let coupon = parseFloat( $('.coupon_price').data('price') ) || 0; 
 				// alert(coupon);
-				$('#order_total_price span').text('$'+(subtotal + cost-coupon).toFixed(2));
+				$('#order_total_price span').text((subtotal + cost-coupon).toFixed(2));
 			});
               $("#checkoutForm").on("submit", function (e) {
                 if ($("#shipping").val() === "") {

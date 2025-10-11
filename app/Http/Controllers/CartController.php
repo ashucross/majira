@@ -15,7 +15,7 @@ class CartController extends Controller
         $this->product=$product;
     }
 
-    public function addToCart(Request $request){ 
+    public function addToCart(Request $request){  
         if (empty($request->slug)) {
             request()->session()->flash('error','Invalid Products');
             return back();
@@ -54,12 +54,11 @@ class CartController extends Controller
 
     
 
-    public function singleAddToCart(Request $request){
+    public function singleAddToCart(Request $request){ 
         $request->validate([
             'slug'      =>  'required',
             'quant'      =>  'required',
         ]);
-        // dd($request->quant[1]);
 
 
         $product = Product::where('slug', $request->slug)->first();

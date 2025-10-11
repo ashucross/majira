@@ -964,8 +964,8 @@ Version:1.0
 	background:transparent;
 }
 .header.shop .nav li.active a{
-	color:#fff;
-	background:#F7941D;
+	    color: #fff;
+    background: #ffffff30;
 }
 .header.shop.v2 .nav li.active a{
 	color:#333 !important;
