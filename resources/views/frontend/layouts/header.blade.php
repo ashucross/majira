@@ -1,3 +1,5 @@
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <header class="header shop">
     <!-- Topbar -->
     <div class="topbar">
@@ -29,8 +31,8 @@
                                 @else 
                                     <!-- <li><i class="ti-user"></i> <a href="{{route('user')}}"  target="_blank">Dashboard</a></li> -->
                                 @endif
-                                <li><i class="ti-power-off"></i> <a href="{{route('user.logout')}}">Logout</a></li>
-
+                                <li><i class="ti-power-off"></i> <a class="text-info" href="{{route('user.logout')}}">Logout</a></li>
+<li ><i class="fa fa-shopping-cart"></i> <a href="{{route('cart')}}" >Cart</a></li> 
                             @else
                                 <li><i class="ti-power-off"></i><a href="{{route('login.form')}}">Login /</a> <a href="{{route('register.form')}}">Register</a></li>
                             @endauth
@@ -120,7 +122,7 @@
                                                         <a href="{{route('wishlist-delete',$data->id)}}" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
                                                         <a class="cart-img" href="#"><img src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}"></a>
                                                         <h4><a href="{{route('product-detail',$data->product['slug'])}}" target="_blank">{{$data->product['title']}}</a></h4>
-                                                        <p class="quantity">{{$data->quantity}} x - <span class="amount">${{number_format($data->price,2)}}</span></p>
+                                                        <p class="quantity">{{$data->quantity}} x - <span class="amount">{{number_format($data->price,2)}}</span></p>
                                                     </li>
                                             @endforeach
                                     </ul>
@@ -157,7 +159,7 @@
                                                         <a href="{{route('cart-delete',$data->id)}}" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
                                                         <a class="cart-img" href="#"><img src="{{url('').'/'.$photo[0]}}" alt="{{url('').'/'.$photo[0]}}"></a>
                                                         <h4><a href="{{route('product-detail',$data->product['slug'])}}" target="_blank">{{$data->product['title']}}</a></h4>
-                                                        <p class="quantity">{{$data->quantity}} x - <span class="amount">${{number_format($data->price,2)}}</span></p>
+                                                        <p class="quantity">{{$data->quantity}} x - <span class="amount">{{number_format($data->price,2)}}</span></p>
                                                     </li>
                                             @endforeach
                                     </ul>
@@ -196,6 +198,19 @@
                                             <li class="{{Request::path()=='blog' ? 'active' : ''}}"><a href="{{route('blog')}}">Blog</a></li>									
                                                
                                             <li class="{{Request::path()=='contact' ? 'active' : ''}}"><a href="{{route('contact')}}">Contact Us</a></li>
+                                            <li class="{{Request::path()=='policies' ? 'active' : ''}}"><a href="{{route('policies')}}">Policies</a></li>
+                            @auth 
+                                @if(Auth::user()->role=='admin')
+                                    <li class="{{Request::path()=='admin' ? 'active' : ''}}"> <a href="{{route('admin')}}"  target="_blank">Dashboard</a></li> 
+                                @endif
+
+                                <li > <a href="{{route('cart')}}" class="btn animate">Cart</a></li> 
+                                <li >  <a  href="{{route('user.logout')}}">Logout</a></li> 
+                            @else
+                                <li> <a  href="{{route('login.form')}}">Login</a></li>
+                                 <li><a href="{{route('register.form')}}">Register</a></li>
+                            @endauth
+
                                         </ul>
                                     </div>
                                 </div>

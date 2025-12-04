@@ -3,6 +3,10 @@ namespace App\Http\Controllers;
 use Razorpay\Api\Api;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Cart; 
+use App\User;
+use App\Mail\OrderPlacedMail;
+use Illuminate\Support\Facades\Mail;
 use Session;
 
 class PaymentController extends Controller
@@ -44,7 +48,7 @@ class PaymentController extends Controller
     ];
 
     try {
-        // Verifies payment signature
+        // Verify payment signature
         $api->utility->verifyPaymentSignature($attributes);
 
         // Mark order as paid
@@ -54,12 +58,23 @@ class PaymentController extends Controller
         // Clear cart & coupon
         Session::forget('cart');
         Session::forget('coupon');
+        Cart::where('user_id', auth()->user()->id)->delete();
 
-        return redirect()->route('home')->with('success', 'Payment successful! Your order is confirmed.');
+        // Send confirmation email to user and admin
+        $user = User::find($order->user_id);
+        if ($user && $user->email) {
+            Mail::to($user->email)->send(new OrderPlacedMail($order));
+        }
+
+        // Send notification email to admin
+        Mail::to('support@shopmajira.com')->send(new OrderPlacedMail($order));
+
+        return redirect()->route('home')->with('success', 'Payment successful! Your order is confirmed. '.$order->order_number);
 
     } catch (\Razorpay\Api\Errors\SignatureVerificationError $e) {
         // Payment failed verification
         return redirect()->route('home')->with('error', 'Payment verification failed. Please try again.');
     }
 }
+
 }

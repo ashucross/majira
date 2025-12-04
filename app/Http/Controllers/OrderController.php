@@ -54,7 +54,7 @@ class OrderController extends Controller
         'post_code' => 'string|nullable',
         'email' => 'string|required',
         'payment_method' => 'string|required'
-    ]);
+    ]); 
 
     if (empty(Cart::where('user_id', auth()->user()->id)->where('order_id', null)->first())) {
         request()->session()->flash('error', 'Cart is Empty!');

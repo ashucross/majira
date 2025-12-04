@@ -56,6 +56,7 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
     Route::get('user/logout', [FrontendController::class, 'logout'])->name('user.logout');
 
     Route::get('user/register', [FrontendController::class, 'register'])->name('register.form');
+    Route::get('policies', [FrontendController::class, 'policies'])->name('policies');
     Route::post('user/register', [FrontendController::class, 'registerSubmit'])->name('register.submit');
    
     // Reset password

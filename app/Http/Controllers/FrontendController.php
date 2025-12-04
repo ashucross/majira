@@ -26,6 +26,10 @@ class FrontendController extends Controller
     return redirect()->route('login');
     }
 
+    public function policies(){ 
+        return view('frontend.pages.policies');
+    }
+
     public function home(){
         $featured=Product::where('status','active')->where('is_featured',1)->orderBy('price','DESC')->limit(2)->get();
         $posts=Post::where('status','active')->orderBy('id','DESC')->limit(3)->get();

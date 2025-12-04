@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 
-@section('title','E-TECH || Blog Detail page')
+@section('title','Majira || Blog Detail page')
 
 @section('main-content')
     <!-- Breadcrumbs -->
@@ -11,7 +11,7 @@
                     <div class="bread-inner">
                         <ul class="bread-list">
                             <li><a href="{{route('home')}}">Home<i class="ti-arrow-right"></i></a></li>
-                            <li class="active"><a href="javascript:void(0);">Blog Single Sidebar</a></li>
+                            <li class="active"><a href="javascript:void(0);">Blog Detail</a></li>
                         </ul>
                     </div>
                 </div>
@@ -126,12 +126,12 @@
                 <div class="col-lg-4 col-12">
                     <div class="main-sidebar">
                         <!-- Single Widget -->
-                        <div class="single-widget search">
+                        <!-- <div class="single-widget search">
                             <form class="form" method="GET" action="{{route('blog.search')}}">
                                 <input type="text" placeholder="Search Here..." name="search">
                                 <button class="button" type="sumbit"><i class="fa fa-search"></i></button>
                             </form>
-                        </div>
+                        </div> -->
                         <!--/ End Single Widget -->
                         <!-- Single Widget -->
                         <div class="single-widget category">
@@ -181,8 +181,8 @@
                         <!--/ End Single Widget -->
                         <!-- Single Widget -->
                         <div class="single-widget newsletter">
-                            <h3 class="title">Newslatter</h3>
-                            <div class="letter-inner">
+                            <!-- <h3 class="title">Newslatter</h3> -->
+                            <!-- <div class="letter-inner">
                                 <h4>Subscribe & get news <br> latest updates.</h4>
                                 <form action="{{route('subscribe')}}" method="POST">
                                     @csrf
@@ -191,7 +191,7 @@
                                         <button type="submit" class="btn mt-2">Submit</button>
                                     </div>
                                 </form>
-                            </div>
+                            </div> -->
                         </div>
                         <!--/ End Single Widget -->
                     </div>

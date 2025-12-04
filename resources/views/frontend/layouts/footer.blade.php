@@ -25,16 +25,21 @@
 							<h4>Information</h4>
 							  <ul>
 								<li><a href="{{ route('about-us') }}">About Us</a></li>
-								<li><a href="#">Faq</a></li>
-								<li><a href="#">Terms & Conditions</a></li>
 								<li><a href="{{ route('contact') }}">Contact Us</a></li>
-								<li><a href="#">Help</a></li>
+								 <li ><a href="{{route('product-grids')}}">Products</a><span class="new">New</span></li>												
+                                                {{Helper::getHeaderCategory()}}
+                                            <li  ><a href="{{route('blog')}}">Blog</a></li>									
+                                               
+                                            <li  ><a href="{{route('contact')}}">Contact Us</a></li>
+								<!-- <li><a href="#">Faq</a></li> -->
+								<!-- <li><a href="#">Terms & Conditions</a></li> -->
+								<!-- <li><a href="#">Help</a></li> -->
 								<!-- Social Links -->
 								<li><a href="https://www.instagram.com/shop_majira06?igsh=eHVwZHlxdnZjMjJ3" target="_blank">
-									<i class="fa fa-instagram"></i> Instagram
+									<!-- <i class="fa fa-instagram"></i> Instagram -->
 								</a></li>
 								<li><a href="#" target="_blank">
-									<i class="fa fa-facebook"></i> Facebook
+									<!-- <i class="fa fa-facebook"></i> Facebook -->
 								</a></li>
 							</ul>
 						</div>
@@ -43,14 +48,14 @@
 					<div class="col-lg-2 col-md-6 col-12">
 						<!-- Single Widget -->
 						<div class="single-footer links">
-							<h4>Customer Service</h4>
+							<!-- <h4>Customer Service</h4>
 							<ul>
 								<li><a href="#">Payment Methods</a></li>
 								<li><a href="#">Money-back</a></li>
 								<li><a href="#">Returns</a></li>
 								<li><a href="#">Shipping</a></li>
 								<li><a href="#">Privacy Policy</a></li>
-							</ul>
+							</ul> -->
 						</div>
 						<!-- End Single Widget -->
 					</div>

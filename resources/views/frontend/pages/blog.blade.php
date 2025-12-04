@@ -11,7 +11,7 @@
                     <div class="bread-inner">
                         <ul class="bread-list">
                             <li><a href="{{route('home')}}">Home<i class="ti-arrow-right"></i></a></li>
-                            <li class="active"><a href="javascript:void(0);">Blog Grid Sidebar</a></li>
+                            <li class="active"><a href="javascript:void(0);">Blog</a></li>
                         </ul>
                     </div>
                 </div>
@@ -57,12 +57,12 @@
                 <div class="col-lg-4 col-12">
                     <div class="main-sidebar">
                         <!-- Single Widget -->
-                        <div class="single-widget search">
+                        <!-- <div class="single-widget search">
                             <form class="form" method="GET" action="{{route('blog.search')}}">
                                 <input type="text" placeholder="Search Here..." name="search">
                                 <button class="button" type="sumbit"><i class="fa fa-search"></i></button>
                             </form>
-                        </div>
+                        </div> -->
                         <!--/ End Single Widget -->
                         <!-- Single Widget -->
                         <div class="single-widget category">
@@ -134,7 +134,7 @@
                         </div>
                         <!--/ End Single Widget -->
                         <!-- Single Widget -->
-                        <div class="single-widget newsletter">
+                        <!-- <div class="single-widget newsletter">
                             <h3 class="title">Newslatter</h3>
                             <div class="letter-inner">
                                 <h4>Subscribe & get news <br> latest updates.</h4>
@@ -144,7 +144,7 @@
                                     <button type="submit" class="btn " style="width: 100%">Submit</button>
                                 </form>
                             </div>
-                        </div>
+                        </div> -->
                         <!--/ End Single Widget -->
                     </div>
                 </div>

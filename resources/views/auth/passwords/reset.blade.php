@@ -1,6 +1,13 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
+<head>
+  <title>Majira || Login Page</title>
+  @include('backend.layouts.head')
+
+</head>
+
+<body class="bg-gradient-primary">
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -62,4 +69,6 @@
         </div>
     </div>
 </div>
-@endsection
+</body> 
+
+</html>
